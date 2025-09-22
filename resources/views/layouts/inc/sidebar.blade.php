@@ -33,9 +33,22 @@
                     <!--begin:Menu link-->
                     <a class="menu-link @if(request()->is('dashboard')) active @endif" href="{{ route('dashboard') }}">
                         <span class="menu-icon">
-                            <i class="ki-duotone ki-home"></i>
+                            <i class="bi bi-house"></i>
                         </span>
                         <span class="menu-title">Dashboard</span>
+                    </a>
+                    <!--end:Menu link-->
+                </div>
+                <!--end:Menu item-->
+
+                <!--begin:Menu item-->
+                <div class="menu-item">
+                    <!--begin:Menu link-->
+                    <a class="menu-link @if(request()->is('agents*')) active @endif " href="{{ route('agents.index') }}">
+                        <span class="menu-icon">
+                            <i class="bi bi-people"></i>
+                        </span>
+                        <span class="menu-title">Agents</span>
                     </a>
                     <!--end:Menu link-->
                 </div>
@@ -47,6 +60,9 @@
         <!--end::Menu wrapper-->
     </div>
     <!--end::sidebar menu-->
+
+
+
     <!--begin::Footer-->
     <div class="app-sidebar-footer d-flex align-items-center px-8 pb-10" id="kt_app_sidebar_footer">
         <!--begin::User-->
@@ -157,7 +173,7 @@
 
                 <!--begin::Menu item-->
                 <div class="menu-item px-5">
-                    <a href="authentication/layouts/corporate/sign-in.html" class="menu-link px-5">Sign Out</a>
+                    <a href="authentication/layouts/corporate/sign-in.html" class="menu-link px-5" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Sign Out</a>
                 </div>
                 <!--end::Menu item-->
             </div>
@@ -167,3 +183,8 @@
     </div>
     <!--end::Footer-->
 </div>
+
+
+<!--begin::sign out form-->
+<form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">@csrf</form>
+<!--end::sign out form-->
