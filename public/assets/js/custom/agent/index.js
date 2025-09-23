@@ -33,8 +33,8 @@ var KTDatatablesServerSide = function () {
                     targets: 0,
                     className: 'd-flex align-items-center',
                     render: function (data, type, row) {
-                        // return `<div class="symbol symbol-circle symbol-50px overflow-hidden me-3"><div class="symbol-label"><img src="${row.photo}" class="w-100px me-3" alt="${row.name}"></div></div>` + data;
-                        return data;
+                        return `<div class="symbol symbol-circle symbol-50px overflow-hidden me-3"><div class="symbol-label"><img src="${row.photo}" class="w-100px me-3" alt="${row.name}"></div></div>` + data;
+
 
                     }
                 },
@@ -185,7 +185,6 @@ var KTDatatablesServerSide = function () {
         init: function () {
             initDatatable();
             handleSearchDatatable();
-
             handleDeleteRows();
         }
     }

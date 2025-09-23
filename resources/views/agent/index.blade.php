@@ -1,7 +1,19 @@
 @extends('layouts.app')
 
 @section('head')
-<link href="{{ env('APP_URL') }}/assets/plugins/custom/datatables/datatables.bundle.css" rel="stylesheet" type="text/css" />
+    <link href="{{ env('APP_URL') }}/assets/plugins/custom/datatables/datatables.bundle.css" rel="stylesheet"
+        type="text/css" />
+    <!--begin::Image input placeholder-->
+    <style>
+        .image-input-placeholder {
+            background-image: url('{{env('APP_URL')}}/assets/media/svg/avatars/blank.svg');
+        }
+
+        [data-bs-theme="dark"] .image-input-placeholder {
+            background-image: url('{{env('APP_URL')}}/assets/media/svg/avatars/blank-dark.svg');
+        }
+    </style>
+    <!--end::Image input placeholder-->
 @endsection
 
 @section('foot')
@@ -37,8 +49,7 @@
                     <!--begin::Toolbar-->
                     <div class="d-flex justify-content-end" data-kt-user-table-toolbar="base">
                         <!--begin::Add user-->
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                            data-bs-target="#kt_modal_add_user">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#kt_modal">
                             <i class="ki-outline ki-plus fs-2"></i>Add User</button>
                         <!--end::Add user-->
                     </div>
@@ -76,5 +87,7 @@
         <!--end::Card-->
     </div>
     <!--end::Content container-->
+
+    @include('agent.create-modal')
 
 @endsection
