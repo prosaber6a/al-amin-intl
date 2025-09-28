@@ -16,7 +16,8 @@ Route::middleware('auth')->group(function () {
 
     // Agents Routes
     Route::get('agents', [AgentController::class, 'index'])->name('agents.index');
-
+    Route::post('agents', [AgentController::class, 'store'])->name('agents.store');
+    Route::get('agents/{agent}/edit', [AgentController::class, 'edit'])->name('agents.edit');
 
     // Profile Routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

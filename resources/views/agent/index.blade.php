@@ -18,6 +18,7 @@
 
 @section('foot')
     <script>
+        const app_url = "{{ env('APP_URL') }}";
         const data_url = "{{ route('agents.index') }}";
     </script>
     <script src="{{ env('APP_URL') }}/assets/plugins/custom/datatables/datatables.bundle.js"></script>
@@ -49,7 +50,7 @@
                     <!--begin::Toolbar-->
                     <div class="d-flex justify-content-end" data-kt-user-table-toolbar="base">
                         <!--begin::Add user-->
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#kt_modal">
+                        <button type="button" class="btn btn-primary" id="create_button">
                             <i class="ki-outline ki-plus fs-2"></i>Add User</button>
                         <!--end::Add user-->
                     </div>
