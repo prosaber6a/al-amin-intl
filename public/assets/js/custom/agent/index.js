@@ -1,7 +1,7 @@
 "use strict";
 
 // Class definition
-var KTDatatablesServerSide = (function () {
+var KTAgent = (function () {
     // Shared variables
     var table;
     var dt;
@@ -14,7 +14,7 @@ var KTDatatablesServerSide = (function () {
             searchDelay: 500,
             processing: true,
             serverSide: true,
-            order: [[0, "desc"]],
+            order: [[0, "asc"]],
             stateSave: false,
             ajax: {
                 url: data_url,
@@ -130,9 +130,11 @@ var KTDatatablesServerSide = (function () {
 
                 // Select parent row
                 const parent = e.target.closest("tr");
-
                 // Get customer name
-                const customerName = parent.querySelectorAll("td")[1].innerText;
+                const customerName = parent.querySelectorAll("td")[0].innerText;
+
+                // Get id from the clicked edit button's data-id attribute
+                const id = e.target.getAttribute("data-id");
 
                 // SweetAlert2 pop up --- official docs reference: https://sweetalert2.github.io/
                 Swal.fire({
@@ -157,18 +159,43 @@ var KTDatatablesServerSide = (function () {
                             showConfirmButton: false,
                             timer: 2000,
                         }).then(function () {
-                            Swal.fire({
-                                text: "You have deleted " + customerName + "!.",
-                                icon: "success",
-                                buttonsStyling: false,
-                                confirmButtonText: "Ok, got it!",
-                                customClass: {
-                                    confirmButton: "btn fw-bold btn-primary",
+
+                            $.ajax({
+                                url: app_url + "/agents/" + id,
+                                type: "DELETE",
+                                success: function (response) {
+                                    console.log(response);
+
+                                    Swal.fire({
+                                        text: "You have deleted " + customerName + "!.",
+                                        icon: "success",
+                                        buttonsStyling: false,
+                                        confirmButtonText: "Ok, got it!",
+                                        customClass: {
+                                            confirmButton: "btn fw-bold btn-primary",
+                                        },
+                                    }).then(function () {
+                                        // delete row data from server and re-draw datatable
+                                        dt.draw();
+                                    });
+
                                 },
-                            }).then(function () {
-                                // delete row data from server and re-draw datatable
-                                dt.draw();
+                                error: function (error) {
+                                    console.log("error", error);
+                                    Swal.fire({
+                                        text: "Sorry! An error occurred",
+                                        icon: "error",
+                                        buttonsStyling: false,
+                                        confirmButtonText: "Ok, got it!",
+                                        customClass: {
+                                            confirmButton: "btn btn-danger",
+                                        },
+                                    });
+                                }
+
                             });
+
+
                         });
                     } else if (result.dismiss === "cancel") {
                         Swal.fire({
@@ -191,7 +218,7 @@ var KTDatatablesServerSide = (function () {
         // Select modal button
         const create_btn = document.getElementById("create_button");
 
-        let modal_props = { name: "", action: "", id: 0, image: "", data: null };
+        let modal_props = { name: "", action: "", id: 0, data: null };
 
         // modal button on click
         create_btn.addEventListener("click", function (e) {
@@ -202,13 +229,12 @@ var KTDatatablesServerSide = (function () {
             modal_props.title = "Add User";
             modal_props.action = "create";
             modal_props.id = 0;
-            modal_props.image = app_url + "/assets/media/avatars/blank.png";
 
             // reset form
             document.getElementById("modal_form").reset();
 
             modal_show(modal_props);
-            
+
         });
 
         // Select all delete buttons
@@ -232,23 +258,12 @@ var KTDatatablesServerSide = (function () {
                         processData: false,
                         contentType: false,
                         success: function (response) {
-                            console.log("success", response);
 
                             // set modal properties
                             modal_props.title = "Edit User";
                             modal_props.action = "update";
                             modal_props.id = response.id;
-                            modal_props.image =  response.photo;
-
-                            // reset form
-                            document.getElementById("modal_form").reset();
-
-                            // set form input value
-                            $("#modal_form [name='name']").val(response.name);
-                            $("#modal_form [name='phone']").val(response.phone);
-                            $("#modal_form [name='email']").val(response.email);
-                            $("#modal_form [name='address']").val(response.address);
-                            
+                            modal_props.data = response;
 
                             modal_show(modal_props);
                         },
@@ -273,16 +288,48 @@ var KTDatatablesServerSide = (function () {
     };
 
     var modal_show = (modal_props) => {
-        // dom set modal propeties
-            $("#modal_form [name='action']").val(modal_props.action);
-            $("#modal_form [name='id']").val(modal_props.id);
-            $("#kt_modal .modal-title").text(modal_props.title);
-            $("#modal_form .image-input-wrapper").css(
-                "background-image",
-                `url(${modal_props.image})`
-            );
+        // reset form
+        document.getElementById("modal_form").reset();
 
-            modal.show();
+        // dom set modal propeties
+        $("#modal_form [name='action']").val(modal_props.action);
+        $("#modal_form [name='id']").val(modal_props.id);
+        $("#kt_modal .modal-title").text(modal_props.title);
+
+
+        if (modal_props.action === "update") {
+
+            // set form input value
+            $("#modal_form [name='name']").val(modal_props.data.name);
+            $("#modal_form [name='phone']").val(modal_props.data.phone);
+            $("#modal_form [name='email']").val(modal_props.data.email);
+            $("#modal_form [name='address']").val(modal_props.data.address);
+            $("#modal_form .image-input-wrapper").css("background-image",`url(${modal_props.data.photo})`);
+            if (modal_props.data.status == 'active') {
+                $("#modal_form input[name='status'][value='inactive']").removeAttr('checked');
+                $("#modal_form input[name='status'][value='inactive']").parent().removeClass('active');
+                $("#modal_form input[name='status'][value='active']").attr('checked', 'checked');
+                $("#modal_form input[name='status'][value='active']").parent().addClass('active');
+            } else {
+                $("#modal_form input[name='status'][value='active']").removeAttr('checked');
+                $("#modal_form input[name='status'][value='active']").parent().removeClass('active');
+                $("#modal_form input[name='status'][value='inactive']").attr('checked', 'checked');
+                $("#modal_form input[name='status'][value='inactive']").parent().addClass('active');
+            }
+
+
+        } else {
+            // action === "create"
+            $("#modal_form .image-input-wrapper").css("background-image",`url(${app_url}/assets/media/avatars/blank.png)`);
+
+            // set default status active
+            $("#modal_form input[name='status'][value='inactive']").removeAttr('checked');
+            $("#modal_form input[name='status'][value='inactive']").parent().removeClass('active');
+            $("#modal_form input[name='status'][value='active']").attr('checked', 'checked');
+            $("#modal_form input[name='status'][value='active']").parent().addClass('active');
+        }
+
+        modal.show();
     };
 
     // Handle form modal
@@ -515,5 +562,5 @@ var KTDatatablesServerSide = (function () {
 
 // On document ready
 KTUtil.onDOMContentLoaded(function () {
-    KTDatatablesServerSide.init();
+    KTAgent.init();
 });

@@ -17,7 +17,7 @@ class AgentController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $agents = Agent::orderBy('created_at', 'desc')->get();
+            $agents = Agent::all();
             return DataTables::of($agents)
                 ->editColumn('photo', function ($agent) {
                     return Storage::temporaryUrl('uploads/agents/' . $agent->photo, now()->addMinutes(5));
@@ -153,19 +153,36 @@ class AgentController extends Controller
         return response()->json(['error' => 'Agent not found'], 404);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Agent $agent)
-    {
-        //
-    }
+
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(Agent $agent)
     {
-        //
+        if ($agent->id) {
+            // delete image
+            if (Storage::exists('uploads/agents/' . $agent->photo)) {
+                try {
+                    Storage::delete('uploads/agents/' . $agent->photo);
+                } catch (\Exception $exception) {
+                    // Log file delete error
+                    Log::error('Agent image delete error: ' . $exception->getMessage());
+                    return response()->json(['error' => 'An unexpected error occured while deleteing image'], 500);
+                }
+            }
+
+            try {
+                $agent->delete();
+            } catch (\Exception $exception) {
+                // log file save error
+                Log::error('Agent delete error: ' . $exception->getMessage());
+                // return response
+                return response()->json(['error' => 'An unexpected error occured while deleting data'], 500);
+            }
+
+            return response()->json(['success' => 'success'], 200);
+        }
+        return response()->json(['error' => 'Agent not found'], 404);
     }
 }
