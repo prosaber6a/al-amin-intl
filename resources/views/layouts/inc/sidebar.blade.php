@@ -54,6 +54,20 @@
                 </div>
                 <!--end:Menu item-->
 
+
+                <!--begin:Menu item-->
+                <div class="menu-item">
+                    <!--begin:Menu link-->
+                    <a class="menu-link @if(request()->is('hotels*')) active @endif " href="{{ route('hotels.index') }}">
+                        <span class="menu-icon">
+                            <i class="bi bi-houses"></i>
+                        </span>
+                        <span class="menu-title">Hotels</span>
+                    </a>
+                    <!--end:Menu link-->
+                </div>
+                <!--end:Menu item-->
+
             </div>
             <!--end::Menu-->
         </div>
