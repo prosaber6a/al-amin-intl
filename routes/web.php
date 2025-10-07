@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AgentController;
 use App\Http\Controllers\HotelController;
 use App\Http\Controllers\FlightController;
+use App\Http\Controllers\PackageController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -34,6 +35,13 @@ Route::middleware('auth')->group(function () {
     Route::post('flights', [FlightController::class, 'store'])->name('flights.store');
     Route::delete('flights/{flight}', [FlightController::class, 'destroy']);
     Route::get('flights/{flight}/edit', [FlightController::class, 'edit']);
+
+    // Package Routes
+    Route::get('packages', [PackageController::class, 'index'])->name('packages.index');
+    Route::post('packages', [PackageController::class, 'store'])->name('packages.store');
+    Route::delete('packages/{package}', [PackageController::class, 'destroy']);
+    Route::get('packages/{package}/edit', [PackageController::class, 'edit']);
+    Route::get('packages/hotel-flight-list', [PackageController::class, 'hotelFlightList']);
 
     // Profile Routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

@@ -110,6 +110,6 @@ class FlightController extends Controller
 
             return response()->json(['success' => 'success'], 200);
         }
-        return response()->json(['error' => 'hotel not found'], 404);
+        return response()->json(['error' => 'Hotel not found'], 404);
     }
 }

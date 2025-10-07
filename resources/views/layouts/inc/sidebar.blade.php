@@ -84,6 +84,20 @@
                 </div>
                 <!--end:Menu item-->
 
+                <!--begin:Menu item-->
+                <div class="menu-item">
+                    <!--begin:Menu link-->
+                    <a class="menu-link @if(request()->is('packages*')) active @endif "
+                        href="{{ route('packages.index') }}">
+                        <span class="menu-icon">
+                            <i class="bi bi-bookmarks"></i>
+                        </span>
+                        <span class="menu-title">Packages</span>
+                    </a>
+                    <!--end:Menu link-->
+                </div>
+                <!--end:Menu item-->
+
             </div>
             <!--end::Menu-->
         </div>

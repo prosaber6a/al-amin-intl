@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Agent;
 use App\Models\Flight;
 use App\Models\Hotel;
+use App\Models\Package;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -16,15 +17,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
 
-        // User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
-
-        Agent::factory(50)->create();
-        Hotel::factory(20)->create();
-        Flight::factory(10)->create();
+        Agent::factory(10)->create();
+        Hotel::factory(5)->create();
+        Flight::factory(5)->create();
+        Package::factory(5)->create();
     }
 }
