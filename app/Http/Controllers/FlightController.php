@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\HotelRequest;
-use App\Models\Hotel;
+use App\Http\Requests\FlightRequest;
+use App\Models\Flight;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Log;
 
-class HotelController extends Controller
+class FlightController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,8 +16,8 @@ class HotelController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $hotels = Hotel::all();
-            return DataTables::of($hotels)
+            $flights = Flight::all();
+            return DataTables::of($flights)
                 ->editColumn('created_at', function ($data) {
                     return $data->created_at->format('j M Y, g:i a');
                 })
@@ -26,13 +26,14 @@ class HotelController extends Controller
                 })
                 ->toJson();
         }
-        return view('hotel.index');
+        return view('flight.index');
     }
+
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(HotelRequest $request)
+    public function store(FlightRequest $request)
     {
         // Validation
         $validated = $request->validated();
@@ -41,23 +42,26 @@ class HotelController extends Controller
 
         // set update or insert
         if ($validated['action'] === 'update' && $id > 0) {
-            $hotel = Hotel::find($id);
+            $flight = Flight::find($id);
         } else {
-            $hotel = new Hotel();
+            $flight = new Flight();
         }
 
         // set value
-        $hotel->name = $validated['name'];
-        $hotel->location = $validated['location'];
-        $hotel->room_type = $validated['room_type'];
-        $hotel->room_capacity = $validated['room_capacity'];
-        $hotel->price_per_night = $validated['price_per_night'];
+        $flight->flight_no = $validated['flight_no'];
+        $flight->airline = $validated['airline'];
+        $flight->from = $validated['from'];
+        $flight->to = $validated['to'];
+        $flight->departure = date('Y-m-d H:i:s', strtotime($validated['departure']));
+        $flight->arrival = date('Y-m-d H:i:s', strtotime($validated['arrival']));
+        $flight->price = $validated['price'];
+
 
         try {
-            $hotel->save();
+            $flight->save();
         } catch (\Exception $exception) {
             // log file save error
-            Log::error('Hotel save error: ' . $exception->getMessage());
+            Log::error('Flight save error: ' . $exception->getMessage());
             // return response
             return response()->json(['error' => 'An unexpected error occured while inserting data'], 500);
         }
@@ -66,39 +70,40 @@ class HotelController extends Controller
     }
 
 
-
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Hotel $hotel)
+    public function edit(Flight $flight)
     {
-        if ($hotel->id) {
+        if ($flight->id) {
             $data = [
-                'id' => $hotel->id,
-                'name' => $hotel->name,
-                'location' => $hotel->location,
-                'room_type' => $hotel->room_type,
-                'room_capacity' => $hotel->room_capacity,
-                'price_per_night' => $hotel->price_per_night,
+                'id' => $flight->id,
+                'flight_no' => $flight->flight_no,
+                'airline' => $flight->airline,
+                'from' => $flight->from,
+                'to' => $flight->to,
+                'departure' => date('Y-m-d H:i', strtotime($flight->departure)),
+                'arrival' => date('Y-m-d H:i', strtotime($flight->arrival)),
+                'price' => $flight->price,
             ];
             return response()->json($data, 200);
         }
-        return response()->json(['error' => 'Hotel not found'], 404);
+        return response()->json(['error' => 'Flight not found'], 404);
     }
 
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Hotel $hotel)
+    public function destroy(Flight $flight)
     {
-        if ($hotel->id) {
+        if ($flight->id) {
 
             try {
-                $hotel->delete();
+                $flight->delete();
             } catch (\Exception $exception) {
                 // log file save error
-                Log::error('Hotel delete error: ' . $exception->getMessage());
+                Log::error('Flight delete error: ' . $exception->getMessage());
                 // return response
                 return response()->json(['error' => 'An unexpected error occured while deleting data'], 500);
             }

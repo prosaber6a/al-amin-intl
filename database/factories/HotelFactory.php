@@ -19,7 +19,7 @@ class HotelFactory extends Factory
         return [
             'name' => $this->faker->company(),
             'location' => $this->faker->city(),
-            'room' => $this->faker->randomElement(['Single', 'Double', 'Suite', 'Deluxe']),
+            'room_type' => $this->faker->randomElement(['Single', 'Double', 'Suite', 'Deluxe']),
             'room_capacity' => $this->faker->numberBetween(1, 6),
             'price_per_night' => $this->faker->randomFloat(2, 50, 500),
         ];

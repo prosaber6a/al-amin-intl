@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AgentController;
 use App\Http\Controllers\HotelController;
+use App\Http\Controllers\FlightController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -28,10 +29,16 @@ Route::middleware('auth')->group(function () {
     Route::delete('hotels/{hotel}', [HotelController::class, 'destroy']);
     Route::get('hotels/{hotel}/edit', [HotelController::class, 'edit']);
 
+    // Flights Routes
+    Route::get('flights', [FlightController::class, 'index'])->name('flights.index');
+    Route::post('flights', [FlightController::class, 'store'])->name('flights.store');
+    Route::delete('flights/{flight}', [FlightController::class, 'destroy']);
+    Route::get('flights/{flight}/edit', [FlightController::class, 'edit']);
+
     // Profile Routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

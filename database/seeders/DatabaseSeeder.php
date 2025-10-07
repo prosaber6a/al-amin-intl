@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Agent;
+use App\Models\Flight;
 use App\Models\Hotel;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -24,5 +25,6 @@ class DatabaseSeeder extends Seeder
 
         Agent::factory(50)->create();
         Hotel::factory(20)->create();
+        Flight::factory(10)->create();
     }
 }

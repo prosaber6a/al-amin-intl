@@ -16,7 +16,7 @@
 
 @section('content')
     <!--begin::Content container-->
-    <div id="kt_app_content_container" class="app-container container-xxl">
+    <div id="kt_app_content_container" class="app-container container-fluid">
         <h2 class="py-10">All Hotels</h2>
         <!--begin::Card-->
         <div class="card">

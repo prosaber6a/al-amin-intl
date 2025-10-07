@@ -3,32 +3,21 @@
 @section('head')
     <link href="{{ env('APP_URL') }}/assets/plugins/custom/datatables/datatables.bundle.css" rel="stylesheet"
         type="text/css" />
-    <!--begin::Image input placeholder-->
-    <style>
-        .image-input-placeholder {
-            background-image: url('{{env('APP_URL')}}/assets/media/svg/avatars/blank.svg');
-        }
-
-        [data-bs-theme="dark"] .image-input-placeholder {
-            background-image: url('{{env('APP_URL')}}/assets/media/svg/avatars/blank-dark.svg');
-        }
-    </style>
-    <!--end::Image input placeholder-->
 @endsection
 
 @section('foot')
     <script>
         const app_url = "{{ env('APP_URL') }}";
-        const data_url = "{{ route('agents.index') }}";
+        const data_url = "{{ route('flights.index') }}";
     </script>
     <script src="{{ env('APP_URL') }}/assets/plugins/custom/datatables/datatables.bundle.js"></script>
-    <script src="{{ env('APP_URL') }}/assets/js/custom/agent/index.js"></script>
+    <script src="{{ env('APP_URL') }}/assets/js/custom/flight/index.js"></script>
 @endsection
 
 @section('content')
     <!--begin::Content container-->
     <div id="kt_app_content_container" class="app-container container-fluid">
-        <h2 class="py-10">All Agents</h2>
+        <h2 class="py-10">All Flights</h2>
         <!--begin::Card-->
         <div class="card">
             <!--begin::Card header-->
@@ -51,7 +40,7 @@
                     <div class="d-flex justify-content-end" data-kt-user-table-toolbar="base">
                         <!--begin::Add user-->
                         <button type="button" class="btn btn-primary" id="create_button">
-                            <i class="ki-outline ki-plus fs-2"></i>Add User</button>
+                            <i class="ki-outline ki-plus fs-2"></i>Add Flight</button>
                         <!--end::Add user-->
                     </div>
                     <!--end::Toolbar-->
@@ -67,11 +56,13 @@
                 <table id="kt_datatable" class="table align-middle table-row-dashed fs-6 gy-5">
                     <thead>
                         <tr class="text-start text-gray-500 fw-bold fs-7 text-uppercase gs-0">
-                            <th class="min-w-200px">Name</th>
-                            <th class="min-w-125px">Email</th>
-                            <th class="min-w-125px">Phone</th>
-                            <th class="min-w-125px">Address</th>
-                            <th class="min-w-125px">Status</th>
+                            <th class="min-w-200px">Flight No</th>
+                            <th class="min-w-125px">Airlines</th>
+                            <th class="min-w-125px">From</th>
+                            <th class="min-w-125px">To</th>
+                            <th class="min-w-125px">Departure</th>
+                            <th class="min-w-125px">Arrival</th>
+                            <th class="min-w-125px">Price</th>
                             <th class="min-w-125px">Joined Date</th>
                             <th class="min-w-125px">Last Update</th>
                             <th class="text-end min-w-100px">Actions</th>
@@ -89,6 +80,6 @@
     </div>
     <!--end::Content container-->
 
-    @include('agent.create-modal')
+    @include('flight.create-modal')
 
 @endsection
