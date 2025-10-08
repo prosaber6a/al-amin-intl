@@ -1,7 +1,7 @@
 "use strict";
 
 // Class definition
-var KTPackages = (function () {
+var KTGroups = (function () {
     // Shared variables
     var table;
     var dt;
@@ -14,30 +14,22 @@ var KTPackages = (function () {
             searchDelay: 500,
             processing: true,
             serverSide: true,
-            order: [[0, "asc"]],
+            // order: [[0, "asc"]],
             stateSave: false,
             ajax: {
                 url: data_url,
             },
             columns: [
+                { data: "DT_RowIndex" },
                 { data: "name" },
-                { data: "type" },
-                { data: "price" },
-                { data: "duration" },
-                { data: "hotel" },
-                { data: "flight" },
+                { data: "leader" },
+                { data: "mobile" },
+                { data: "total_member" },
                 { data: "created_at" },
                 { data: "updated_at" },
                 { data: null },
             ],
             columnDefs: [
-                {
-                    targets: 1,
-                    data: "type",
-                    render: function (data, type, row) {
-                        return data.toUpperCase();
-                    },
-                },
                 {
                     targets: -1,
                     data: null,
@@ -116,14 +108,14 @@ var KTPackages = (function () {
                 // Select parent row
                 const parent = e.target.closest("tr");
                 // Get customer name
-                const name = parent.querySelectorAll("td")[0].innerText;
+                const hotelName = parent.querySelectorAll("td")[0].innerText;
 
                 // Get id from the clicked edit button's data-id attribute
                 const id = e.target.getAttribute("data-id");
 
                 // SweetAlert2 pop up --- official docs reference: https://sweetalert2.github.io/
                 Swal.fire({
-                    text: "Are you sure you want to delete " + name + "?",
+                    text: "Are you sure you want to delete " + hotelName + "?",
                     icon: "warning",
                     showCancelButton: true,
                     buttonsStyling: false,
@@ -137,20 +129,23 @@ var KTPackages = (function () {
                     if (result.value) {
                         // Simulate delete request -- for demo purpose only
                         Swal.fire({
-                            text: "Deleting " + name,
+                            text: "Deleting " + hotelName,
                             icon: "info",
                             buttonsStyling: false,
                             showConfirmButton: false,
                             timer: 2000,
                         }).then(function () {
                             $.ajax({
-                                url: app_url + "/packages/" + id,
+                                url: app_url + "/groups/" + id,
                                 type: "DELETE",
                                 success: function (response) {
                                     console.log(response);
 
                                     Swal.fire({
-                                        text: "You have deleted " + name + "!.",
+                                        text:
+                                            "You have deleted " +
+                                            hotelName +
+                                            "!.",
                                         icon: "success",
                                         buttonsStyling: false,
                                         confirmButtonText: "Ok, got it!",
@@ -179,7 +174,7 @@ var KTPackages = (function () {
                         });
                     } else if (result.dismiss === "cancel") {
                         Swal.fire({
-                            text: name + " was not deleted.",
+                            text: hotelName + " was not deleted.",
                             icon: "error",
                             buttonsStyling: false,
                             confirmButtonText: "Ok, got it!",
@@ -200,53 +195,13 @@ var KTPackages = (function () {
 
         let modal_props = { name: "", action: "", id: 0, data: null };
 
-        // hotel and flight list
-        $.ajax({
-            url: app_url + "/packages/hotel-flight-list",
-            type: "get",
-            processData: false,
-            contentType: false,
-            success: function (response) {
-                console.log("success", response);
-                const hotels = response.hotels;
-                const flights = response.flights;
-
-                // populate hotel select options
-                let hotel_options = "";
-                hotels.forEach((hotel) => {
-                    hotel_options += `<option value="${hotel.id}">${hotel.name} (${hotel.room_type}, ${hotel.room_capacity}person, ${hotel.price_per_night}/night)</option>`;
-                });
-                document
-                    .querySelector("#kt_modal select[name='hotel_id']")
-                    .insertAdjacentHTML("beforeend", hotel_options);
-
-                // populate flight select options
-                let flight_options = "";
-                flights.forEach((flight) => {
-                    const departure = moment(flight.departure).format(
-                        "DD-MMM-YY HH:mm"
-                    );
-                    const arrival = moment(flight.arrival).format(
-                        "DD-MMM-YY HH:mm"
-                    );
-                    flight_options += `<option value="${flight.id}">${flight.airline} - ${flight.flight_no} (${departure} to ${arrival})</option>`;
-                });
-                document
-                    .querySelector("#kt_modal select[name='flight_id']")
-                    .insertAdjacentHTML("beforeend", flight_options);
-            },
-            error: function (error) {
-                console.log("error", error);
-            },
-        });
-
         // modal button on click
         create_btn.addEventListener("click", function (e) {
             e.preventDefault();
 
             // set modal properties
             modal_props.data = null;
-            modal_props.title = "Add Package";
+            modal_props.title = "Create a Group";
             modal_props.action = "create";
             modal_props.id = 0;
 
@@ -271,7 +226,7 @@ var KTPackages = (function () {
 
                 if (!isNaN(id) && id > 0) {
                     $.ajax({
-                        url: app_url + "/packages/" + id + "/edit",
+                        url: app_url + "/groups/" + id + "/edit",
                         type: "get",
                         data: { id: id },
                         processData: false,
@@ -280,7 +235,7 @@ var KTPackages = (function () {
                             console.log("success", response);
 
                             // set modal properties
-                            modal_props.title = "Edit Package";
+                            modal_props.title = "Edit Group";
                             modal_props.action = "update";
                             modal_props.id = response.id;
                             modal_props.data = response;
@@ -319,17 +274,8 @@ var KTPackages = (function () {
         if (modal_props.action === "update") {
             // set form input value
             $("#modal_form [name='name']").val(modal_props.data.name);
-            $("#modal_form [name='type']")
-                .val(modal_props.data.type)
-                .trigger("change");
-            $("#modal_form [name='price']").val(modal_props.data.price);
-            $("#modal_form [name='duration']").val(modal_props.data.duration);
-            $("#modal_form [name='hotel_id']")
-                .val(modal_props.data.hotel_id)
-                .trigger("change");
-            $("#modal_form [name='flight_id']")
-                .val(modal_props.data.flight_id)
-                .trigger("change");
+            $("#modal_form [name='leader']").val(modal_props.data.leader);
+            $("#modal_form [name='mobile']").val(modal_props.data.mobile);
         }
 
         modal.show();
@@ -351,54 +297,21 @@ var KTPackages = (function () {
                 name: {
                     validators: {
                         notEmpty: {
-                            message: "Package name is required",
+                            message: "Group name is required",
                         },
                     },
                 },
-                type: {
+                leader: {
                     validators: {
                         notEmpty: {
-                            message: "Package type is required",
+                            message: "Group leader name is required",
                         },
                     },
                 },
-                price: {
+                mobile: {
                     validators: {
                         notEmpty: {
-                            message: "Price is required",
-                        },
-                        numeric: {
-                            message: "Price must be a number",
-                        },
-                    },
-                },
-                duration: {
-                    validators: {
-                        notEmpty: {
-                            message: "Duration is required",
-                        },
-                        numeric: {
-                            message: "Duration must be a number",
-                        },
-                    },
-                },
-                hotel_id: {
-                    validators: {
-                        notEmpty: {
-                            message: "Hotel is required",
-                        },
-                        integer: {
-                            message: "Hotel must be an integer",
-                        },
-                    },
-                },
-                flight_id: {
-                    validators: {
-                        notEmpty: {
-                            message: "Flight is required",
-                        },
-                        integer: {
-                            message: "Flight must be an integer",
+                            message: "Leader mobile number is required",
                         },
                     },
                 },
@@ -448,13 +361,12 @@ var KTPackages = (function () {
 
                                 //set message
                                 let message =
-                                    "Package info inserted successfully";
+                                    "Group info inserted successfully";
                                 if (
                                     $("#kt_modal [name=action]").val() ===
                                     "update"
                                 ) {
-                                    message =
-                                        "Package info updated successfully";
+                                    message = "Group info updated successfully";
                                 }
 
                                 //reset modal form
@@ -532,5 +444,5 @@ var KTPackages = (function () {
 
 // On document ready
 KTUtil.onDOMContentLoaded(function () {
-    KTPackages.init();
+    KTGroups.init();
 });

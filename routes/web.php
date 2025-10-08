@@ -6,6 +6,7 @@ use App\Http\Controllers\AgentController;
 use App\Http\Controllers\HotelController;
 use App\Http\Controllers\FlightController;
 use App\Http\Controllers\PackageController;
+use App\Http\Controllers\GroupController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -42,6 +43,13 @@ Route::middleware('auth')->group(function () {
     Route::delete('packages/{package}', [PackageController::class, 'destroy']);
     Route::get('packages/{package}/edit', [PackageController::class, 'edit']);
     Route::get('packages/hotel-flight-list', [PackageController::class, 'hotelFlightList']);
+
+
+    // Group Routes
+    Route::get('groups', [GroupController::class, 'index'])->name('groups.index');
+    Route::post('groups', [GroupController::class, 'store'])->name('groups.store');
+    Route::delete('groups/{group}', [GroupController::class, 'destroy']);
+    Route::get('groups/{group}/edit', [GroupController::class, 'edit']);
 
     // Profile Routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
