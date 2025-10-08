@@ -43,13 +43,21 @@ class PackageController extends Controller
      */
     public function hotelFlightList()
     {
-        $hotels = \App\Models\Hotel::all(['id', 'name', 'room_type', 'room_capacity', 'price_per_night']);
-        $flights = \App\Models\Flight::all(['id', 'flight_no', 'airline', 'departure', 'arrival']);
+        try {
+            $hotels = \App\Models\Hotel::all(['id', 'name', 'room_type', 'room_capacity', 'price_per_night']);
+            $flights = \App\Models\Flight::all(['id', 'flight_no', 'airline', 'departure', 'arrival']);
 
-        return response()->json([
-            'hotels' => $hotels,
-            'flights' => $flights,
-        ], 200);
+            return response()->json([
+                'hotels' => $hotels,
+                'flights' => $flights,
+            ], 200);
+        } catch (\Exception $e) {
+            Log::error('Error fetching hotel and flight list for package create: ' . $e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to fetch data. Please try again later.',
+            ], 500);
+        }
     }
 
 

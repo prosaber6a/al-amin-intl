@@ -44,6 +44,21 @@
                 <!--begin:Menu item-->
                 <div class="menu-item">
                     <!--begin:Menu link-->
+                    <a class="menu-link @if(request()->is('pilgrims*')) active @endif "
+                        href="{{ route('pilgrims.index') }}">
+                        <span class="menu-icon">
+                            <i class="bi bi-person-lines-fill"></i>
+                        </span>
+                        <span class="menu-title">Pilgrim</span>
+                    </a>
+                    <!--end:Menu link-->
+                </div>
+                <!--end:Menu item-->
+
+
+                <!--begin:Menu item-->
+                <div class="menu-item">
+                    <!--begin:Menu link-->
                     <a class="menu-link @if(request()->is('agents*')) active @endif "
                         href="{{ route('agents.index') }}">
                         <span class="menu-icon">

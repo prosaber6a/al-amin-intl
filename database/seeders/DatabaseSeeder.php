@@ -7,6 +7,7 @@ use App\Models\Flight;
 use App\Models\Group;
 use App\Models\Hotel;
 use App\Models\Package;
+use App\Models\Pilgrim;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -24,5 +25,6 @@ class DatabaseSeeder extends Seeder
         Flight::factory(5)->create();
         Package::factory(5)->create();
         Group::factory(5)->create();
+        Pilgrim::factory(20)->create();
     }
 }

@@ -7,6 +7,7 @@ use App\Http\Controllers\HotelController;
 use App\Http\Controllers\FlightController;
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\GroupController;
+use App\Http\Controllers\PilgrimController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -50,6 +51,14 @@ Route::middleware('auth')->group(function () {
     Route::post('groups', [GroupController::class, 'store'])->name('groups.store');
     Route::delete('groups/{group}', [GroupController::class, 'destroy']);
     Route::get('groups/{group}/edit', [GroupController::class, 'edit']);
+
+    // Pilgrim Routes
+    Route::get('pilgrims', [PilgrimController::class, 'index'])->name('pilgrims.index');
+    Route::get('pilgrims/agent-group-package-list', [PilgrimController::class, 'agentGroupPackageList']);
+    Route::post('pilgrims', [PilgrimController::class, 'store'])->name('pilgrims.store');
+    Route::delete('pilgrims/{pilgrim}', [PilgrimController::class, 'destroy']);
+    Route::get('pilgrims/{pilgrim}/edit', [PilgrimController::class, 'edit']);
+
 
     // Profile Routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
